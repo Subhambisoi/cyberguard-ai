@@ -20,9 +20,10 @@ def detect_phishing(url=None, message=None):
     ml_probability = 0.0
     url_probability = 0.0
 
-    # -----------------------------
-    # URL ANALYSIS
-    # -----------------------------
+    # ==============================
+    # URL DETECTION
+    # ==============================
+
     if url:
         url_features = extract_url_features(url)
 
@@ -52,13 +53,12 @@ def detect_phishing(url=None, message=None):
 
         evidence.extend(url_features["evidence"])
 
-        # URL-only phishing likelihood.
-        # This is a rule-based normalized score, not a calibrated ML probability.
         url_probability = min(risk_score / 100, 1.0)
 
-    # -----------------------------
-    # MESSAGE ANALYSIS
-    # -----------------------------
+    # ==============================
+    # MESSAGE / ML DETECTION
+    # ==============================
+
     if message:
         message_vector = vectorizer.transform([message])
 
@@ -66,26 +66,27 @@ def detect_phishing(url=None, message=None):
 
         phishing_index = list(model.classes_).index(1)
 
-        ml_probability = float(probabilities[phishing_index])
+        ml_probability = float(
+            probabilities[phishing_index]
+        )
 
+        # ML contribution to risk score
         ml_score = int(ml_probability * 60)
 
         risk_score += ml_score
 
+        # Add evidence when model probability is meaningful
         if ml_probability >= 0.50:
             evidence.append(
                 f"ML model detected suspicious message "
                 f"(phishing probability: {ml_probability:.2f})"
             )
 
-    # Keep score between 0 and 100
-    risk_score = min(risk_score, 100)
+    # ==============================
+    # COMBINED PROBABILITY
+    # ==============================
 
-    # -----------------------------
-    # FINAL PHISHING PROBABILITY
-    # -----------------------------
-    if message and url:
-        # Combine the strongest signal from URL rules and ML.
+    if url and message:
         phishing_probability = max(
             ml_probability,
             url_probability
@@ -102,34 +103,59 @@ def detect_phishing(url=None, message=None):
         2
     )
 
-    # -----------------------------
-    # RISK LEVEL
-    # -----------------------------
-    if risk_score >= 70:
-        risk_level = "High"
-    elif risk_score >= 40:
-        risk_level = "Medium"
-    else:
-        risk_level = "Low"
+    # ==============================
+    # THREAT DECISION
+    # ==============================
 
-    # -----------------------------
-    # THREAT CLASSIFICATION
-    # -----------------------------
-    if risk_score >= 40:
+    # High-confidence ML detection
+    high_ml_threat = (
+        message is not None
+        and ml_probability >= 0.60
+    )
+
+    # Strong URL detection
+    strong_url_threat = (
+        url is not None
+        and url_probability >= 0.50
+    )
+
+    # Combined evidence
+    combined_threat = (
+        url is not None
+        and message is not None
+        and (
+            ml_probability >= 0.50
+            or url_probability >= 0.40
+        )
+    )
+
+    if high_ml_threat or strong_url_threat or combined_threat:
         is_threat = True
         threat_type = "Phishing"
     else:
         is_threat = False
         threat_type = "Safe"
 
-    # -----------------------------
+    # ==============================
+    # RISK LEVEL
+    # ==============================
+
+    if risk_score >= 70:
+        risk_level = "High"
+    elif risk_score >= 40 or high_ml_threat:
+        risk_level = "Medium"
+    else:
+        risk_level = "Low"
+
+    # ==============================
     # FINAL OUTPUT
-    # -----------------------------
+    # ==============================
+
     return {
         "is_threat": is_threat,
         "threat_type": threat_type,
         "risk_level": risk_level,
-        "risk_score": risk_score,
+        "risk_score": min(risk_score, 100),
         "phishing_probability": phishing_probability,
         "evidence": evidence
     }
