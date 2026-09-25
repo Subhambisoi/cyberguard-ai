@@ -1,37 +1,28 @@
 import os
 import joblib
 
-from features import extract_url_features
+from .features import extract_url_features
 
 
-# Load trained ML model and TF-IDF vectorizer
-MODEL_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "phishing_model.pkl"
-)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-VECTORIZER_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "tfidf_vectorizer.pkl"
-)
+MODEL_PATH = os.path.join(BASE_DIR, "phishing_model.pkl")
+VECTORIZER_PATH = os.path.join(BASE_DIR, "tfidf_vectorizer.pkl")
 
 model = joblib.load(MODEL_PATH)
 vectorizer = joblib.load(VECTORIZER_PATH)
 
 
 def detect_phishing(url=None, message=None):
-    """
-    Detect phishing indicators from a URL or message/email.
-    Uses rule-based URL analysis and ML-based message analysis.
-    """
-
     risk_score = 0
     evidence = []
-    ml_probability = 0.0
 
-    # --------------------------------------------------
-    # 1. URL ANALYSIS
-    # --------------------------------------------------
+    ml_probability = 0.0
+    url_probability = 0.0
+
+    # -----------------------------
+    # URL ANALYSIS
+    # -----------------------------
     if url:
         url_features = extract_url_features(url)
 
@@ -39,19 +30,35 @@ def detect_phishing(url=None, message=None):
             risk_score += 30
 
         if url_features["has_suspicious_keyword"]:
-            risk_score += 20
+            risk_score += 15
 
         if url_features["has_url_shortener"]:
             risk_score += 15
 
-        if url_features["has_unusual_pattern"]:
-            risk_score += 20
+        if url_features["has_at_symbol"]:
+            risk_score += 25
+
+        if url_features["has_excessive_hyphens"]:
+            risk_score += 10
+
+        if url_features["has_long_url"]:
+            risk_score += 10
+
+        if url_features["has_suspicious_subdomain"]:
+            risk_score += 15
+
+        if url_features["has_malformed_url"]:
+            risk_score += 25
 
         evidence.extend(url_features["evidence"])
 
-    # --------------------------------------------------
-    # 2. ML MESSAGE / EMAIL ANALYSIS
-    # --------------------------------------------------
+        # URL-only phishing likelihood.
+        # This is a rule-based normalized score, not a calibrated ML probability.
+        url_probability = min(risk_score / 100, 1.0)
+
+    # -----------------------------
+    # MESSAGE ANALYSIS
+    # -----------------------------
     if message:
         message_vector = vectorizer.transform([message])
 
@@ -59,9 +66,8 @@ def detect_phishing(url=None, message=None):
 
         phishing_index = list(model.classes_).index(1)
 
-        ml_probability = probabilities[phishing_index]
+        ml_probability = float(probabilities[phishing_index])
 
-        # Convert phishing probability into risk points
         ml_score = int(ml_probability * 60)
 
         risk_score += ml_score
@@ -72,14 +78,33 @@ def detect_phishing(url=None, message=None):
                 f"(phishing probability: {ml_probability:.2f})"
             )
 
-    # --------------------------------------------------
-    # 3. LIMIT SCORE TO 100
-    # --------------------------------------------------
+    # Keep score between 0 and 100
     risk_score = min(risk_score, 100)
 
-    # --------------------------------------------------
-    # 4. RISK LEVEL
-    # --------------------------------------------------
+    # -----------------------------
+    # FINAL PHISHING PROBABILITY
+    # -----------------------------
+    if message and url:
+        # Combine the strongest signal from URL rules and ML.
+        phishing_probability = max(
+            ml_probability,
+            url_probability
+        )
+    elif message:
+        phishing_probability = ml_probability
+    elif url:
+        phishing_probability = url_probability
+    else:
+        phishing_probability = 0.0
+
+    phishing_probability = round(
+        min(phishing_probability, 1.0),
+        2
+    )
+
+    # -----------------------------
+    # RISK LEVEL
+    # -----------------------------
     if risk_score >= 70:
         risk_level = "High"
     elif risk_score >= 40:
@@ -87,9 +112,9 @@ def detect_phishing(url=None, message=None):
     else:
         risk_level = "Low"
 
-    # --------------------------------------------------
-    # 5. FINAL THREAT DECISION
-    # --------------------------------------------------
+    # -----------------------------
+    # THREAT CLASSIFICATION
+    # -----------------------------
     if risk_score >= 40:
         is_threat = True
         threat_type = "Phishing"
@@ -97,14 +122,14 @@ def detect_phishing(url=None, message=None):
         is_threat = False
         threat_type = "Safe"
 
-    # --------------------------------------------------
-    # 6. FINAL STRUCTURED OUTPUT
-    # --------------------------------------------------
+    # -----------------------------
+    # FINAL OUTPUT
+    # -----------------------------
     return {
         "is_threat": is_threat,
         "threat_type": threat_type,
         "risk_level": risk_level,
         "risk_score": risk_score,
-        "confidence": round(ml_probability, 2),
+        "phishing_probability": phishing_probability,
         "evidence": evidence
     }
