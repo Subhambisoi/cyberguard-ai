@@ -71,7 +71,7 @@ def detect_phishing(url=None, message=None):
         )
 
         # ML contribution to risk score
-        ml_score = int(ml_probability * 60)
+        ml_score = int(ml_probability * 100)
 
         risk_score += ml_score
 
@@ -110,7 +110,7 @@ def detect_phishing(url=None, message=None):
     # High-confidence ML detection
     high_ml_threat = (
         message is not None
-        and ml_probability >= 0.60
+        and ml_probability >= 0.55
     )
 
     # Strong URL detection
@@ -124,7 +124,7 @@ def detect_phishing(url=None, message=None):
         url is not None
         and message is not None
         and (
-            ml_probability >= 0.50
+            ml_probability >= 0.55
             or url_probability >= 0.40
         )
     )
@@ -142,7 +142,7 @@ def detect_phishing(url=None, message=None):
 
     if risk_score >= 70:
         risk_level = "High"
-    elif risk_score >= 40 or high_ml_threat:
+    elif risk_score >= 55:
         risk_level = "Medium"
     else:
         risk_level = "Low"
