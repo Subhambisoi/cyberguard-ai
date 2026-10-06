@@ -1,5 +1,8 @@
 
-from .detector import detect_account_takeover
+try:
+    from .detector import detect_account_takeover
+except ImportError:
+    from detector import detect_account_takeover
 
 
 def run_test(test_name, event, expected_level):
