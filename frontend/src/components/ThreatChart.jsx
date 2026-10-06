@@ -4,46 +4,92 @@ import {
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip
+  Tooltip,
+  CartesianGrid
 } from "recharts";
 
-import { threatActivity } from "../data/mockThreats";
 
-export default function ThreatChart() {
+export default function ThreatChart({
+  data
+}) {
+
   return (
-    <div className="h-full rounded-2xl border border-slate-800 bg-[#07111f] p-5">
 
-      <div className="mb-5">
+    <div className="glass rounded-2xl p-5">
 
-        <h3 className="text-base font-semibold text-white">
-          Threat Activity
-        </h3>
+      <div
+        className="
+        flex
+        items-center
+        justify-between
+        "
+      >
 
-        <p className="mt-1 text-xs text-slate-500">
-          Threat detections over the last 24 hours
-        </p>
+        <div>
+
+          <p
+            className="
+            font-semibold
+            text-white
+            "
+          >
+            Threat Activity
+          </p>
+
+          <p
+            className="
+            mt-1
+            text-xs
+            text-slate-500
+            "
+          >
+            Demo telemetry over the last 7 days
+          </p>
+
+        </div>
+
+
+        <span
+          className="
+          rounded-lg
+          border
+          border-white/10
+          px-2
+          py-1
+          font-mono
+          text-[10px]
+          text-slate-500
+          "
+        >
+          MOCK
+        </span>
 
       </div>
 
-      <div className="h-[280px]">
 
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="mt-6 h-[280px]">
 
-          <AreaChart data={threatActivity}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
+
+          <AreaChart data={data}>
 
             <defs>
+
               <linearGradient
-                id="threatGradient"
+                id="phishingFill"
                 x1="0"
                 y1="0"
                 x2="0"
                 y2="1"
               >
+
                 <stop
                   offset="0%"
                   stopColor="#22d3ee"
-                  stopOpacity={0.35}
+                  stopOpacity={0.28}
                 />
 
                 <stop
@@ -51,44 +97,67 @@ export default function ThreatChart() {
                   stopColor="#22d3ee"
                   stopOpacity={0}
                 />
+
               </linearGradient>
+
             </defs>
 
+
             <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#1e293b"
+              stroke="#ffffff10"
+              vertical={false}
             />
 
+
             <XAxis
-              dataKey="time"
+              dataKey="day"
               stroke="#64748b"
-              fontSize={11}
               tickLine={false}
               axisLine={false}
             />
+
 
             <YAxis
               stroke="#64748b"
-              fontSize={11}
               tickLine={false}
               axisLine={false}
+              width={30}
             />
+
 
             <Tooltip
               contentStyle={{
-                backgroundColor: "#07111f",
-                border: "1px solid #1e293b",
-                borderRadius: "10px",
-                color: "#fff"
+                background: "#091525",
+                border: "1px solid #ffffff15",
+                borderRadius: 12
               }}
             />
 
+
             <Area
               type="monotone"
-              dataKey="threats"
+              dataKey="phishing"
               stroke="#22d3ee"
+              fill="url(#phishingFill)"
               strokeWidth={2}
-              fill="url(#threatGradient)"
+            />
+
+
+            <Area
+              type="monotone"
+              dataKey="impersonation"
+              stroke="#818cf8"
+              fill="none"
+              strokeWidth={2}
+            />
+
+
+            <Area
+              type="monotone"
+              dataKey="takeover"
+              stroke="#f59e0b"
+              fill="none"
+              strokeWidth={2}
             />
 
           </AreaChart>
@@ -97,6 +166,74 @@ export default function ThreatChart() {
 
       </div>
 
+
+      <div
+        className="
+        mt-2
+        flex
+        gap-5
+        text-[11px]
+        text-slate-500
+        "
+      >
+
+        <span>
+
+          <i
+            className="
+            mr-1.5
+            inline-block
+            h-2
+            w-2
+            rounded-full
+            bg-cyan-400
+            "
+          />
+
+          Phishing
+
+        </span>
+
+
+        <span>
+
+          <i
+            className="
+            mr-1.5
+            inline-block
+            h-2
+            w-2
+            rounded-full
+            bg-indigo-400
+            "
+          />
+
+          Impersonation
+
+        </span>
+
+
+        <span>
+
+          <i
+            className="
+            mr-1.5
+            inline-block
+            h-2
+            w-2
+            rounded-full
+            bg-amber-400
+            "
+          />
+
+          Account Takeover
+
+        </span>
+
+      </div>
+
     </div>
+
   );
+
 }

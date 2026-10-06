@@ -4,59 +4,313 @@ import {
   Search
 } from "lucide-react";
 
-export default function Topbar({ setMobileOpen }) {
+import {
+  useState
+} from "react";
+
+import {
+  useLocation
+} from "react-router-dom";
+
+import {
+  getUser
+} from "../services/auth";
+
+import ProfileDropdown from "./ProfileDropdown";
+
+
+const pageInformation = {
+
+  "/dashboard": [
+    "Security Overview",
+    "Real-time cyber defense command center"
+  ],
+
+  "/analyze": [
+    "Threat Analysis",
+    "Inspect suspicious content with demo-ready analysis"
+  ],
+
+  "/incidents": [
+    "Incident Center",
+    "Review, prioritize and monitor security incidents"
+  ],
+
+  "/analytics": [
+    "Security Analytics",
+    "Understand threat patterns and operational trends"
+  ],
+
+  "/team": [
+    "CyberGuard Team",
+    "Meet the people building the defense platform"
+  ],
+
+  "/profile": [
+    "My Profile",
+    "Manage your CyberGuard identity"
+  ],
+
+  "/settings": [
+    "Settings",
+    "Control dashboard preferences"
+  ]
+
+};
+
+
+export default function Topbar() {
+
+  const location = useLocation();
+
+  const [open, setOpen] = useState(false);
+
+  const user = getUser();
+
+  const [
+    title,
+    subtitle
+  ] =
+    pageInformation[
+      location.pathname
+    ] ||
+    pageInformation["/dashboard"];
+
+
   return (
-    <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-800 bg-[#050d19]/95 px-4 backdrop-blur-md sm:px-6">
 
-      <div className="flex items-center gap-4">
+    <header
+      className="
+      sticky
+      top-0
+      z-30
+      border-b
+      border-white/10
+      bg-[#050b14]/85
+      backdrop-blur-xl
+      "
+    >
 
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="rounded-lg border border-slate-800 bg-slate-900 p-2 text-slate-300 lg:hidden"
-        >
-          <Menu size={20} />
-        </button>
+      <div
+        className="
+        flex
+        min-h-[72px]
+        items-center
+        justify-between
+        gap-4
+        px-4
+        md:px-6
+        lg:px-8
+        "
+      >
 
-        <div>
-          <p className="text-xs text-slate-500">
-            Security Operations Center
-          </p>
+        {/* LEFT */}
 
-          <h2 className="text-lg font-semibold text-white">
-            Overview
-          </h2>
+        <div className="flex min-w-0 items-center gap-3">
+
+          <button
+            className="
+            grid
+            h-10
+            w-10
+            place-items-center
+            rounded-xl
+            border
+            border-white/10
+            bg-white/[.03]
+            text-slate-300
+            lg:hidden
+            "
+          >
+
+            <Menu size={19} />
+
+          </button>
+
+
+          <div className="min-w-0">
+
+            <div
+              className="
+              truncate
+              text-base
+              font-bold
+              text-white
+              md:text-lg
+              "
+            >
+              {title}
+            </div>
+
+            <div
+              className="
+              hidden
+              truncate
+              text-xs
+              text-slate-500
+              sm:block
+              "
+            >
+              {subtitle}
+            </div>
+
+          </div>
+
         </div>
 
-      </div>
 
-      <div className="flex items-center gap-3">
+        {/* SEARCH */}
 
-        <div className="hidden items-center gap-2 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 md:flex">
+        <div className="hidden max-w-sm flex-1 md:block">
 
-          <Search size={16} className="text-slate-500" />
+          <div className="relative">
 
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-32 bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
-          />
+            <Search
+              size={16}
+              className="
+              absolute
+              left-3
+              top-3
+              text-slate-600
+              "
+            />
+
+            <input
+              className="input py-2.5 pl-9"
+              placeholder="
+              Search incidents, IDs, threats...
+              "
+            />
+
+          </div>
 
         </div>
 
-        <button className="relative rounded-xl border border-slate-800 bg-slate-900 p-2.5 text-slate-400 hover:text-white">
 
-          <Bell size={18} />
+        {/* RIGHT */}
 
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+        <div className="flex items-center gap-2">
 
-        </button>
+          <button
+            className="
+            relative
+            grid
+            h-10
+            w-10
+            place-items-center
+            rounded-xl
+            border
+            border-white/10
+            bg-white/[.03]
+            text-slate-400
+            hover:text-white
+            "
+          >
 
-        <div className="hidden h-9 w-9 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-400/10 text-sm font-bold text-cyan-300 sm:flex">
-          CG
+            <Bell size={18} />
+
+            <span
+              className="
+              absolute
+              right-2
+              top-2
+              h-1.5
+              w-1.5
+              rounded-full
+              bg-cyan-400
+              "
+            />
+
+          </button>
+
+
+          {/* PROFILE */}
+
+          <div className="relative">
+
+            <button
+              onClick={() =>
+                setOpen(
+                  value => !value
+                )
+              }
+
+              className="
+              flex
+              items-center
+              gap-2
+              rounded-xl
+              border
+              border-white/10
+              bg-white/[.03]
+              p-1.5
+              pr-3
+              hover:bg-white/[.06]
+              "
+            >
+
+              <div
+                className="
+                grid
+                h-8
+                w-8
+                place-items-center
+                rounded-lg
+                bg-gradient-to-br
+                from-cyan-300
+                to-blue-500
+                text-xs
+                font-black
+                text-slate-950
+                "
+              >
+
+                {
+                  user.username
+                    ?.slice(0, 2)
+                    .toUpperCase()
+                  || "SH"
+                }
+
+              </div>
+
+
+              <span
+                className="
+                hidden
+                text-sm
+                font-semibold
+                text-slate-200
+                sm:block
+                "
+              >
+
+                {user.username}
+
+              </span>
+
+            </button>
+
+
+            {open && (
+
+              <ProfileDropdown
+                user={user}
+                onClose={() =>
+                  setOpen(false)
+                }
+              />
+
+            )}
+
+          </div>
+
         </div>
 
       </div>
 
     </header>
+
   );
+
 }

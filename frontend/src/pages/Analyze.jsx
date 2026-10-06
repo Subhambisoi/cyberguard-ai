@@ -1,117 +1,474 @@
 import {
-  AudioLines,
-  Image,
-  Link2,
-  Mail
+  AlertCircle,
+  FileSearch,
+  RotateCcw,
+  Send
 } from "lucide-react";
 
-import AnalyzeCard from "../components/AnalyzeCard";
+import {
+  useMemo,
+  useState
+} from "react";
+
+import {
+  cards
+} from "../components/AnalyzeCard";
+
+import AnalyzeCard
+  from "../components/AnalyzeCard";
+
+import ThreatResult
+  from "../components/ThreatResult";
+
+import RiskScore
+  from "../components/RiskScore";
+
+import Explanation
+  from "../components/Explanation";
+
+import Recommendation
+  from "../components/Recommendation";
+
+import {
+  demoThreatResults
+} from "../data/dummyThreatResult";
+
 
 export default function Analyze() {
+
+  const [
+    selected,
+    setSelected
+  ] = useState(
+    cards[0]
+  );
+
+
+  const [
+    text,
+    setText
+  ] = useState("");
+
+
+  const [
+    result,
+    setResult
+  ] = useState(null);
+
+
+  /*
+    This calculates which demo
+    result should be displayed.
+  */
+
+  const resultKey =
+    useMemo(() => {
+
+      if (!text.trim()) {
+
+        return 0;
+
+      }
+
+
+      const value =
+        text.toLowerCase();
+
+
+      if (
+        value.includes("password") ||
+        value.includes("verify") ||
+        value.includes("urgent") ||
+        value.includes("click")
+      ) {
+
+        return 0;
+
+      }
+
+
+      if (
+        value.includes("account") ||
+        value.includes("login")
+      ) {
+
+        return 2;
+
+      }
+
+
+      return 1;
+
+    }, [text]);
+
+
+  /*
+    Analyze button.
+    IMPORTANT:
+    setResult is called every time,
+    so second analysis replaces
+    the first result.
+  */
+
+  const analyze = () => {
+
+    if (!text.trim()) {
+
+      return;
+
+    }
+
+
+    setResult({
+
+      ...demoThreatResults[
+        resultKey
+      ],
+
+      id: Date.now()
+
+    });
+
+  };
+
+
+  const clear = () => {
+
+    setText("");
+
+    setResult(null);
+
+  };
+
+
   return (
-    <div className="cyber-grid min-h-full">
 
-      <div className="mx-auto max-w-6xl">
+    <div
+      className="
+      mx-auto
+      max-w-[1500px]
+      space-y-6
+      "
+    >
 
-        {/* Heading */}
+      {/* HEADER */}
 
-        <div className="mb-10 text-center">
+      <div>
 
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10">
+        <div className="eyebrow">
 
-            <span className="text-2xl">
-              🛡️
-            </span>
-
-          </div>
-
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">
-            AI Threat Analyzer
-          </p>
-
-          <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-            Analyze Digital Threats
-          </h1>
-
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
-            Select an input type below to analyze emails, URLs, images,
-            audio and other suspicious digital content.
-          </p>
+          Threat Analysis Center
 
         </div>
 
-        {/* Cards */}
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <h1
+          className="
+          page-title
+          mt-2
+          "
+        >
 
-          <AnalyzeCard
-            title="Email / Message"
-            description="Analyze suspicious emails and messages for phishing, social engineering and credential theft indicators."
-            icon={Mail}
-            path="/analyze/email"
-            iconColor="text-cyan-400"
-            iconBg="bg-cyan-400/10"
-          />
+          Analyze suspicious content
 
-          <AnalyzeCard
-            title="URL / Link"
-            description="Check URLs for malicious domains, phishing pages, suspicious redirects and other indicators."
-            icon={Link2}
-            path="/analyze/url"
-            iconColor="text-blue-400"
-            iconBg="bg-blue-400/10"
-          />
+        </h1>
 
-          <AnalyzeCard
-            title="Image / Deepfake"
-            description="Upload an image to inspect possible manipulation and digital impersonation indicators."
-            icon={Image}
-            path="/analyze/image"
-            iconColor="text-purple-400"
-            iconBg="bg-purple-400/10"
-          />
 
-          <AnalyzeCard
-            title="Audio / Voice"
-            description="Analyze audio for possible synthetic speech, voice impersonation and manipulation indicators."
-            icon={AudioLines}
-            path="/analyze/audio"
-            iconColor="text-orange-400"
-            iconBg="bg-orange-400/10"
-          />
+        <p
+          className="
+          mt-2
+          max-w-2xl
+          text-sm
+          text-slate-500
+          "
+        >
 
-        </div>
+          The current UI uses clearly
+          labeled demo data. Connect
+          the FastAPI endpoint later
+          without changing the page
+          structure.
 
-        {/* Information */}
+        </p>
 
-        <div className="mt-8 rounded-2xl border border-cyan-400/10 bg-cyan-400/5 p-5">
+      </div>
 
-          <div className="flex gap-3">
 
-            <div className="text-xl">
-              ℹ️
+      {/* ANALYSIS TYPES */}
+
+      <div
+        className="
+        grid
+        gap-4
+        md:grid-cols-2
+        xl:grid-cols-4
+        "
+      >
+
+        {cards.map(
+          card => (
+
+            <AnalyzeCard
+
+              key={card.title}
+
+              card={card}
+
+              onSelect={
+                setSelected
+              }
+
+            />
+
+          )
+        )}
+
+      </div>
+
+
+      {/* TEXT ANALYSIS */}
+
+      {selected.active && (
+
+        <section
+          className="
+          glass
+          rounded-2xl
+          p-5
+          md:p-6
+          "
+        >
+
+          <div
+            className="
+            flex
+            items-center
+            gap-3
+            "
+          >
+
+            <div
+              className="
+              grid
+              h-10
+              w-10
+              place-items-center
+              rounded-xl
+              bg-cyan-400/10
+              text-cyan-300
+              "
+            >
+
+              <FileSearch
+                size={19}
+              />
+
             </div>
+
 
             <div>
 
-              <h3 className="text-sm font-semibold text-cyan-300">
-                Analysis Environment
-              </h3>
+              <p
+                className="
+                font-bold
+                text-white
+                "
+              >
 
-              <p className="mt-1 text-xs leading-5 text-slate-500">
-                This frontend currently uses simulated analysis results.
-                The architecture is prepared for connection to a future
-                CyberGuard backend and machine-learning services.
+                {selected.title}
+                Analysis
+
+              </p>
+
+
+              <p
+                className="
+                text-xs
+                text-slate-500
+                "
+              >
+
+                Demo analysis input
+
               </p>
 
             </div>
 
           </div>
 
+
+          <textarea
+
+            value={text}
+
+            onChange={
+              event =>
+                setText(
+                  event.target.value
+                )
+            }
+
+            className="
+            input
+            mt-5
+            min-h-40
+            resize-y
+            leading-6
+            "
+
+            placeholder="
+            Paste a suspicious message here...
+            "
+
+          />
+
+
+          <div
+            className="
+            mt-4
+            flex
+            flex-wrap
+            items-center
+            justify-between
+            gap-3
+            "
+          >
+
+            <div
+              className="
+              flex
+              items-center
+              gap-2
+              text-[11px]
+              text-amber-400/80
+              "
+            >
+
+              <AlertCircle
+                size={14}
+              />
+
+              Demo only —
+              not a real threat verdict
+
+            </div>
+
+
+            <div
+              className="
+              flex
+              gap-2
+              "
+            >
+
+              <button
+                onClick={clear}
+                className="btn-secondary"
+              >
+
+                <RotateCcw
+                  size={15}
+                />
+
+                Clear
+
+              </button>
+
+
+              <button
+                onClick={analyze}
+                className="btn-primary"
+              >
+
+                <Send
+                  size={15}
+                />
+
+                Analyze
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      )}
+
+
+      {/* RESULT */}
+
+      {result && (
+
+        <div className="space-y-5">
+
+          <ThreatResult
+            result={result}
+          />
+
+
+          <div
+            className="
+            grid
+            gap-5
+            lg:grid-cols-2
+            "
+          >
+
+            <RiskScore
+              score={
+                result.riskScore
+              }
+              level={
+                result.riskLevel
+              }
+            />
+
+
+            <Explanation
+              text={
+                result.explanation
+              }
+            />
+
+          </div>
+
+
+          <Recommendation
+            actions={
+              result.actions
+            }
+          />
+
+
+          <div
+            className="
+            rounded-xl
+            border
+            border-amber-400/10
+            bg-amber-400/[.03]
+            p-4
+            text-xs
+            text-amber-200/70
+            "
+          >
+
+            This result is frontend
+            mock data. Image and audio
+            analysis remain unavailable
+            until the corresponding
+            backend detectors are
+            implemented.
+
+          </div>
+
         </div>
 
-      </div>
+      )}
 
     </div>
+
   );
+
 }

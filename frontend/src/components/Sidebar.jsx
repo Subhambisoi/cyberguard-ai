@@ -1,169 +1,277 @@
 import {
+  NavLink
+} from "react-router-dom";
+
+import {
   Activity,
   BarChart3,
-  FileWarning,
+  FileSearch,
   LayoutDashboard,
   Settings,
   ShieldCheck,
-  Users,
-  ScanSearch,
-  X
+  Users
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
 
-const menuItems = [
+const navigation = [
+
   {
-    name: "Dashboard",
-    path: "/",
+    to: "/dashboard",
+    label: "Dashboard",
     icon: LayoutDashboard
   },
+
   {
-    name: "Analyze",
-    path: "/analyze",
-    icon: ScanSearch
+    to: "/analyze",
+    label: "Analyze",
+    icon: FileSearch
   },
+
   {
-    name: "Incidents",
-    path: "/incidents",
-    icon: FileWarning
+    to: "/incidents",
+    label: "Incidents",
+    icon: Activity
   },
+
   {
-    name: "Analytics",
-    path: "/analytics",
+    to: "/analytics",
+    label: "Analytics",
     icon: BarChart3
   },
+
   {
-    name: "Team",
-    path: "/team",
+    to: "/team",
+    label: "Team",
     icon: Users
-  },
-  {
-    name: "Settings",
-    path: "/settings",
-    icon: Settings
   }
+
 ];
 
-export default function Sidebar({ mobileOpen, setMobileOpen }) {
+
+export default function Sidebar() {
+
   return (
-    <>
-      {mobileOpen && (
+
+    <aside
+      className="
+      fixed
+      inset-y-0
+      left-0
+      z-40
+      hidden
+      w-[260px]
+      border-r
+      border-white/10
+      bg-[#06101c]/95
+      lg:block
+      "
+    >
+
+      <div className="flex h-full flex-col">
+
+
+        {/* BRAND */}
+
         <div
-          className="fixed inset-0 z-40 bg-black/70 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+          className="
+          flex
+          h-[72px]
+          items-center
+          gap-3
+          border-b
+          border-white/10
+          px-6
+          "
+        >
 
-      <aside
-        className={`
-          fixed left-0 top-0 z-50 h-screen w-64
-          border-r border-slate-800
-          bg-[#050d19]
-          transition-transform duration-300
-          lg:translate-x-0
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
-      >
-        <div className="flex h-full flex-col">
+          <div
+            className="
+            grid
+            h-10
+            w-10
+            place-items-center
+            rounded-xl
+            bg-cyan-400
+            text-slate-950
+            shadow-lg
+            shadow-cyan-400/20
+            "
+          >
 
-          {/* Logo */}
-          <div className="flex h-20 items-center justify-between border-b border-slate-800 px-5">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10">
-                <ShieldCheck className="h-6 w-6 text-cyan-400" />
-              </div>
-
-              <div>
-                <h1 className="text-lg font-bold tracking-wide text-white">
-                  CYBER<span className="text-cyan-400">GUARD</span>
-                </h1>
-
-                <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500">
-                  Security Center
-                </p>
-              </div>
-
-            </div>
-
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 lg:hidden"
-            >
-              <X size={20} />
-            </button>
+            <ShieldCheck size={24} />
 
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 space-y-2 px-3 py-6">
 
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
-              Main Menu
-            </p>
+          <div>
 
-            {menuItems.map((item) => {
-
-              const Icon = item.icon;
-
-              return (
-                <NavLink
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) =>
-                    `
-                    group flex items-center gap-3 rounded-xl px-4 py-3
-                    text-sm font-medium transition
-                    ${
-                      isActive
-                        ? "border border-cyan-400/20 bg-cyan-400/10 text-cyan-300"
-                        : "text-slate-400 hover:bg-slate-800/70 hover:text-white"
-                    }
-                    `
-                  }
-                >
-                  <Icon size={19} />
-
-                  <span>{item.name}</span>
-                </NavLink>
-              );
-            })}
-
-          </nav>
-
-          {/* Bottom status */}
-          <div className="border-t border-slate-800 p-4">
-
-            <div className="rounded-xl border border-emerald-400/10 bg-emerald-400/5 p-4">
-
-              <div className="mb-2 flex items-center gap-2">
-
-                <span className="status-dot animate-cyber bg-emerald-400" />
-
-                <span className="text-xs font-medium text-emerald-400">
-                  SYSTEM ONLINE
-                </span>
-
-              </div>
-
-              <p className="text-[11px] leading-5 text-slate-500">
-                All monitoring services are operating normally.
-              </p>
-
+            <div
+              className="
+              text-lg
+              font-black
+              tracking-tight
+              text-white
+              "
+            >
+              CYBERGUARD
             </div>
 
-            <div className="mt-4 flex items-center gap-2 text-xs text-slate-600">
-              <Activity size={14} />
-              CYBERGUARD v1.0
+            <div
+              className="
+              font-mono
+              text-[9px]
+              uppercase
+              tracking-[.2em]
+              text-cyan-400
+              "
+            >
+              Defense Command
             </div>
 
           </div>
 
         </div>
-      </aside>
-    </>
+
+
+        {/* NAVIGATION */}
+
+        <div className="px-4 pt-7">
+
+          <div
+            className="
+            mb-3
+            px-3
+            text-[10px]
+            font-bold
+            uppercase
+            tracking-[.2em]
+            text-slate-600
+            "
+          >
+            Operations
+          </div>
+
+
+          <nav className="space-y-1">
+
+            {navigation.map(
+              ({
+                to,
+                label,
+                icon: Icon
+              }) => (
+
+                <NavLink
+                  key={to}
+                  to={to}
+
+                  className={({
+                    isActive
+                  }) =>
+
+                    `group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
+                      isActive
+                        ? "bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/10"
+                        : "text-slate-400 hover:bg-white/[.04] hover:text-white"
+                    }`
+
+                  }
+                >
+
+                  <Icon size={18} />
+
+                  {label}
+
+                </NavLink>
+
+              )
+            )}
+
+          </nav>
+
+        </div>
+
+
+        {/* BOTTOM */}
+
+        <div className="mt-auto p-4">
+
+          <NavLink
+            to="/settings"
+            className="
+            flex
+            items-center
+            gap-3
+            rounded-xl
+            border
+            border-white/10
+            bg-white/[.03]
+            px-3
+            py-3
+            text-sm
+            font-semibold
+            text-slate-400
+            hover:text-white
+            "
+          >
+
+            <Settings size={18} />
+
+            Settings
+
+          </NavLink>
+
+
+          <div
+            className="
+            mt-4
+            rounded-xl
+            border
+            border-cyan-400/10
+            bg-cyan-400/[.03]
+            p-3
+            "
+          >
+
+            <div className="flex items-center gap-2">
+
+              <span
+                className="
+                h-2
+                w-2
+                animate-pulse
+                rounded-full
+                bg-emerald-400
+                "
+              />
+
+              <span
+                className="
+                text-xs
+                font-semibold
+                text-slate-300
+                "
+              >
+                Demo monitoring online
+              </span>
+
+            </div>
+
+
+            <p className="mt-1 text-[10px] text-slate-600">
+
+              Frontend demonstration mode
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
   );
+
 }

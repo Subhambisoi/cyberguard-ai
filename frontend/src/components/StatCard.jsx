@@ -1,51 +1,134 @@
-export default function StatCard({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  iconColor = "text-cyan-400",
-  iconBg = "bg-cyan-400/10",
-  trend
-}) {
-  return (
-    <div className="group rounded-2xl border border-slate-800 bg-[#07111f] p-5 transition hover:border-slate-700 hover:shadow-cyber">
+import {
+  Activity,
+  AlertTriangle,
+  ShieldAlert,
+  Zap
+} from "lucide-react";
 
-      <div className="flex items-start justify-between">
+
+const iconMap = {
+
+  cyan: Activity,
+
+  blue: Zap,
+
+  red: ShieldAlert,
+
+  amber: AlertTriangle
+
+};
+
+
+export default function StatCard({
+  stat
+}) {
+
+  const Icon =
+    iconMap[
+      stat.tone
+    ] || Activity;
+
+
+  const improvement =
+    stat.label ===
+      "Critical Threats" &&
+    stat.delta.startsWith("-");
+
+
+  return (
+
+    <div className="glass rounded-2xl p-5">
+
+      <div
+        className="
+        flex
+        items-start
+        justify-between
+        "
+      >
 
         <div>
 
-          <p className="text-sm text-slate-500">
-            {title}
+          <p
+            className="
+            text-xs
+            font-semibold
+            uppercase
+            tracking-wider
+            text-slate-500
+            "
+          >
+
+            {stat.label}
+
           </p>
 
-          <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
-            {value}
-          </h3>
+
+          <p
+            className="
+            mt-2
+            text-3xl
+            font-extrabold
+            tracking-tight
+            text-white
+            "
+          >
+
+            {stat.value}
+
+          </p>
 
         </div>
 
+
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl ${iconBg}`}
+          className="
+          grid
+          h-10
+          w-10
+          place-items-center
+          rounded-xl
+          bg-cyan-400/10
+          text-cyan-300
+          "
         >
-          <Icon className={`h-5 w-5 ${iconColor}`} />
+
+          <Icon size={19} />
+
         </div>
 
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
 
-        <p className="text-xs text-slate-600">
-          {subtitle}
-        </p>
+      <div
+        className={`
+          mt-4
+          text-xs
+          font-semibold
+          ${
+            improvement
+              ? "text-emerald-400"
+              : "text-cyan-400"
+          }
+        `}
+      >
 
-        {trend && (
-          <span className="text-xs font-medium text-emerald-400">
-            {trend}
-          </span>
-        )}
+        {stat.delta}
+
+        <span
+          className="
+          ml-1
+          font-normal
+          text-slate-600
+          "
+        >
+          vs previous period
+        </span>
 
       </div>
 
     </div>
+
   );
+
 }

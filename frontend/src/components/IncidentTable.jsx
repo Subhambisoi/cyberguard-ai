@@ -1,194 +1,195 @@
 import {
-  ShieldAlert,
-  ExternalLink
+  ArrowUpRight
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import {
+  riskClass
+} from "../utils/formatters";
 
-function severityStyle(severity) {
-  switch (severity) {
-    case "Critical":
-      return "bg-red-400/10 text-red-400 border-red-400/20";
 
-    case "High":
-      return "bg-orange-400/10 text-orange-400 border-orange-400/20";
+export default function IncidentTable({
+  incidents,
+  compact = false
+}) {
 
-    case "Medium":
-      return "bg-yellow-400/10 text-yellow-400 border-yellow-400/20";
+  const rows =
+    compact
+      ? incidents.slice(0, 4)
+      : incidents;
 
-    default:
-      return "bg-slate-400/10 text-slate-400 border-slate-400/20";
-  }
-}
 
-function statusStyle(status) {
-  if (status === "Blocked") {
-    return "text-emerald-400";
-  }
-
-  if (status === "Under Review" || status === "Investigating") {
-    return "text-yellow-400";
-  }
-
-  return "text-slate-400";
-}
-
-export default function IncidentTable({ incidents = [] }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#07111f]">
 
-      <div className="flex items-center justify-between border-b border-slate-800 p-5">
+    <div className="glass overflow-hidden rounded-2xl">
 
-        <div>
+      <div
+        className="
+        border-b
+        border-white/10
+        px-5
+        py-4
+        "
+      >
 
-          <h3 className="font-semibold text-white">
-            Recent Incidents
-          </h3>
+        <p className="font-semibold text-white">
 
-          <p className="mt-1 text-xs text-slate-500">
-            Latest detected security events
-          </p>
+          Recent Security Incidents
 
-        </div>
+        </p>
 
-        <Link
-          to="/incidents"
-          className="text-xs font-medium text-cyan-400 hover:text-cyan-300"
-        >
-          View All
-        </Link>
+        <p className="mt-1 text-xs text-slate-500">
+
+          Demo records for the command center
+
+        </p>
 
       </div>
 
+
       <div className="overflow-x-auto">
 
-        <table className="w-full min-w-[750px] text-left">
+        <table
+          className="
+          w-full
+          min-w-[760px]
+          text-left
+          "
+        >
 
-          <thead className="border-b border-slate-800 bg-slate-900/40">
+          <thead
+            className="
+            bg-white/[.02]
+            text-[10px]
+            uppercase
+            tracking-wider
+            text-slate-600
+            "
+          >
 
             <tr>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
+              <th className="px-5 py-3">
                 Incident
               </th>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
+              <th className="px-5 py-3">
                 Type
               </th>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
-                Severity
+              <th className="px-5 py-3">
+                Source
               </th>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
-                Confidence
+              <th className="px-5 py-3">
+                Risk
               </th>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
+              <th className="px-5 py-3">
                 Status
               </th>
 
-              <th className="px-5 py-3 text-xs font-medium text-slate-500">
+              <th className="px-5 py-3">
                 Time
               </th>
 
-              <th />
             </tr>
 
           </thead>
 
-          <tbody>
 
-            {incidents.map((incident) => (
+          <tbody
+            className="
+            divide-y
+            divide-white/5
+            "
+          >
 
-              <tr
-                key={incident.id}
-                className="border-b border-slate-800/70 transition hover:bg-slate-900/50"
-              >
+            {rows.map(
+              item => (
 
-                <td className="px-5 py-4">
+                <tr
+                  key={item.id}
+                  className="
+                  text-sm
+                  transition
+                  hover:bg-white/[.025]
+                  "
+                >
 
-                  <div className="flex items-center gap-3">
-
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-400/10">
-
-                      <ShieldAlert
-                        size={17}
-                        className="text-red-400"
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <p className="text-sm font-medium text-white">
-                        {incident.id}
-                      </p>
-
-                      <p className="max-w-[180px] truncate text-xs text-slate-600">
-                        {incident.target}
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                </td>
-
-                <td className="px-5 py-4 text-sm text-slate-400">
-                  {incident.type}
-                </td>
-
-                <td className="px-5 py-4">
-
-                  <span
-                    className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${severityStyle(
-                      incident.severity
-                    )}`}
+                  <td
+                    className="
+                    px-5
+                    py-4
+                    font-mono
+                    text-xs
+                    text-cyan-300
+                    "
                   >
-                    {incident.severity}
-                  </span>
+                    {item.id}
+                  </td>
 
-                </td>
 
-                <td className="px-5 py-4">
-
-                  <span className="text-sm font-semibold text-white">
-                    {incident.confidence}%
-                  </span>
-
-                </td>
-
-                <td className="px-5 py-4">
-
-                  <span
-                    className={`text-xs font-medium ${statusStyle(
-                      incident.status
-                    )}`}
+                  <td
+                    className="
+                    px-5
+                    py-4
+                    font-semibold
+                    text-slate-200
+                    "
                   >
-                    {incident.status}
-                  </span>
+                    {item.type}
+                  </td>
 
-                </td>
 
-                <td className="px-5 py-4 text-xs text-slate-500">
-                  {incident.time}
-                </td>
-
-                <td className="px-5 py-4">
-
-                  <Link
-                    to={`/incidents/${incident.id}`}
-                    className="text-slate-500 hover:text-cyan-400"
+                  <td
+                    className="
+                    px-5
+                    py-4
+                    text-slate-500
+                    "
                   >
-                    <ExternalLink size={16} />
-                  </Link>
+                    {item.source}
+                  </td>
 
-                </td>
 
-              </tr>
+                  <td className="px-5 py-4">
 
-            ))}
+                    <span
+                      className={`risk-pill ${riskClass(
+                        item.risk
+                      )}`}
+                    >
+                      {item.risk}
+                    </span>
+
+                  </td>
+
+
+                  <td
+                    className="
+                    px-5
+                    py-4
+                    text-slate-400
+                    "
+                  >
+                    {item.status}
+                  </td>
+
+
+                  <td
+                    className="
+                    px-5
+                    py-4
+                    text-slate-500
+                    "
+                  >
+                    {item.time}
+                  </td>
+
+                </tr>
+
+              )
+            )}
 
           </tbody>
 
@@ -196,6 +197,42 @@ export default function IncidentTable({ incidents = [] }) {
 
       </div>
 
+
+      {compact && (
+
+        <div
+          className="
+          border-t
+          border-white/10
+          px-5
+          py-3
+          "
+        >
+
+          <a
+            href="/incidents"
+            className="
+            inline-flex
+            items-center
+            gap-1
+            text-xs
+            font-bold
+            text-cyan-400
+            "
+          >
+
+            View all incidents
+
+            <ArrowUpRight size={13} />
+
+          </a>
+
+        </div>
+
+      )}
+
     </div>
+
   );
+
 }
