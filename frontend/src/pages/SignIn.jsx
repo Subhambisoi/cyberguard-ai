@@ -1,377 +1,400 @@
 import {
-  ShieldCheck,
-  ArrowRight
+ShieldCheck,
+ArrowRight
 } from "lucide-react";
 
 import {
-  useState
+useState
 } from "react";
 
 import {
-  Link,
-  useNavigate
+Link,
+useNavigate
 } from "react-router-dom";
 
 import {
-  signIn
+signIn
 } from "../services/auth";
-
 
 export default function SignIn() {
 
-  const navigate =
-    useNavigate();
+const navigate =
+useNavigate();
+
+const [
+form,
+setForm
+] = useState({
 
 
-  const [
-    form,
-    setForm
-  ] = useState({
+username: "",
 
-    username: "",
+email: "",
 
-    email: "",
-
-    password: ""
-
-  });
+password: ""
 
 
-  const submit = (
-    event
-  ) => {
+});
 
-    event.preventDefault();
-
-
-    signIn({
-
-      username:
-        form.username ||
-        "Shreyas",
-
-      email:
-        form.email ||
-        "security@cyberguard.local"
-
-    });
+const submit = (
+event
+) => {
 
 
-    navigate(
-      "/dashboard"
-    );
-
-  };
+event.preventDefault();
 
 
-  return (
+signIn({
+
+  username:
+    form.username ||
+    "Shreyas",
+
+  email:
+    form.email ||
+    "security@cyberguard.local"
+
+});
+
+
+/*
+Enable CyberGuard AI Voice
+after successful sign in.
+
+The Topbar and Analyze page
+use the same setting.
+*/
+
+localStorage.setItem(
+  "cyberguard_voice_enabled",
+  "true"
+);
+
+
+/*
+Navigate to the dashboard.
+
+Topbar will automatically
+announce the Dashboard page.
+*/
+
+navigate(
+  "/dashboard"
+);
+
+
+};
+
+return (
+
+
+<div
+  className="
+  grid
+  min-h-screen
+  place-items-center
+  p-5
+  "
+>
+
+  <div
+    className="
+    grid
+    w-full
+    max-w-5xl
+    overflow-hidden
+    rounded-3xl
+    border
+    border-white/10
+    bg-[#091525]/90
+    shadow-2xl
+    lg:grid-cols-2
+    "
+  >
+
+    {/* LEFT */}
 
     <div
       className="
-      grid
-      min-h-screen
-      place-items-center
-      p-5
+      hidden
+      min-h-[650px]
+      flex-col
+      justify-between
+      bg-gradient-to-br
+      from-cyan-400/10
+      via-blue-500/5
+      to-transparent
+      p-10
+      lg:flex
       "
     >
 
       <div
         className="
-        grid
-        w-full
-        max-w-5xl
-        overflow-hidden
-        rounded-3xl
-        border
-        border-white/10
-        bg-[#091525]/90
-        shadow-2xl
-        lg:grid-cols-2
+        flex
+        items-center
+        gap-3
         "
       >
 
-        {/* LEFT */}
-
         <div
           className="
-          hidden
-          min-h-[650px]
-          flex-col
-          justify-between
-          bg-gradient-to-br
-          from-cyan-400/10
-          via-blue-500/5
-          to-transparent
-          p-10
-          lg:flex
+          grid
+          h-11
+          w-11
+          place-items-center
+          rounded-xl
+          bg-cyan-400
+          text-slate-950
           "
         >
 
-          <div
-            className="
-            flex
-            items-center
-            gap-3
-            "
-          >
-
-            <div
-              className="
-              grid
-              h-11
-              w-11
-              place-items-center
-              rounded-xl
-              bg-cyan-400
-              text-slate-950
-              "
-            >
-
-              <ShieldCheck />
-
-            </div>
-
-
-            <span
-              className="
-              font-black
-              text-white
-              "
-            >
-
-              CYBERGUARD
-
-            </span>
-
-          </div>
-
-
-          <div>
-
-            <div className="eyebrow">
-
-              Secure Access
-
-            </div>
-
-
-            <h1
-              className="
-              mt-3
-              text-4xl
-              font-black
-              text-white
-              "
-            >
-
-              Your security
-              command center.
-
-            </h1>
-
-
-            <p
-              className="
-              mt-4
-              max-w-md
-              text-sm
-              leading-6
-              text-slate-500
-              "
-            >
-
-              Sign in to monitor
-              threats, investigate
-              incidents and manage
-              your defense workspace.
-
-            </p>
-
-          </div>
-
-
-          <p
-            className="
-            font-mono
-            text-[10px]
-            uppercase
-            tracking-widest
-            text-slate-700
-            "
-          >
-
-            BPUT TECH CARNIVAL
-            · DEMO PLATFORM
-
-          </p>
+          <ShieldCheck />
 
         </div>
 
 
-        {/* RIGHT */}
-
-        <div
+        <span
           className="
-          p-7
-          md:p-10
+          font-black
+          text-white
           "
         >
 
-          <div
-            className="
-            lg:hidden
-            "
-          >
+          CYBERGUARD
 
-            <div className="eyebrow">
+        </span>
 
-              CYBERGUARD
-
-            </div>
-
-          </div>
+      </div>
 
 
-          <h2
-            className="
-            mt-4
-            text-2xl
-            font-black
-            text-white
-            "
-          >
+      <div>
 
-            Welcome back
+        <div className="eyebrow">
 
-          </h2>
+          Secure Access
+
+        </div>
 
 
-          <p
-            className="
-            mt-2
-            text-sm
-            text-slate-500
-            "
-          >
+        <h1
+          className="
+          mt-3
+          text-4xl
+          font-black
+          text-white
+          "
+        >
 
-            Enter your demo
-            account details.
+          Your security
+          command center.
 
-          </p>
-
-
-          <form
-            onSubmit={submit}
-            className="
-            mt-8
-            space-y-4
-            "
-          >
-
-            <input
-              className="input"
-              placeholder="Username"
-              value={
-                form.username
-              }
-              onChange={
-                event =>
-                  setForm({
-                    ...form,
-                    username:
-                      event.target.value
-                  })
-              }
-            />
+        </h1>
 
 
-            <input
-              className="input"
-              type="email"
-              placeholder="Email"
-              value={
-                form.email
-              }
-              onChange={
-                event =>
-                  setForm({
-                    ...form,
-                    email:
-                      event.target.value
-                  })
-              }
-            />
+        <p
+          className="
+          mt-4
+          max-w-md
+          text-sm
+          leading-6
+          text-slate-500
+          "
+        >
+
+          Sign in to monitor
+          threats, investigate
+          incidents and manage
+          your defense workspace.
+
+        </p>
+
+      </div>
 
 
-            <input
-              className="input"
-              type="password"
-              placeholder="Password"
-              value={
-                form.password
-              }
-              onChange={
-                event =>
-                  setForm({
-                    ...form,
-                    password:
-                      event.target.value
-                  })
-              }
-            />
+      <p
+        className="
+        font-mono
+        text-[10px]
+        uppercase
+        tracking-widest
+        text-slate-700
+        "
+      >
+
+        BPUT TECH CARNIVAL
+        · DEMO PLATFORM
+
+      </p>
+
+    </div>
 
 
-            <button
-              className="
-              btn-primary
-              w-full
-              "
-            >
+    {/* RIGHT */}
 
-              Sign In
+    <div
+      className="
+      p-7
+      md:p-10
+      "
+    >
 
-              <ArrowRight
-                size={16}
-              />
+      <div
+        className="
+        lg:hidden
+        "
+      >
 
-            </button>
+        <div className="eyebrow">
 
-          </form>
-
-
-          <p
-            className="
-            mt-6
-            text-center
-            text-xs
-            text-slate-500
-            "
-          >
-
-            Don't have an account?
-
-            {" "}
-
-            <Link
-              to="/signup"
-              className="
-              font-bold
-              text-cyan-400
-              "
-            >
-
-              Create account
-
-            </Link>
-
-          </p>
+          CYBERGUARD
 
         </div>
 
       </div>
 
+
+      <h2
+        className="
+        mt-4
+        text-2xl
+        font-black
+        text-white
+        "
+      >
+
+        Welcome back
+
+      </h2>
+
+
+      <p
+        className="
+        mt-2
+        text-sm
+        text-slate-500
+        "
+      >
+
+        Enter your demo
+        account details.
+
+      </p>
+
+
+      <form
+        onSubmit={submit}
+        className="
+        mt-8
+        space-y-4
+        "
+      >
+
+        <input
+          className="input"
+          placeholder="Username"
+          value={
+            form.username
+          }
+          onChange={
+            event =>
+              setForm({
+                ...form,
+                username:
+                  event.target.value
+              })
+          }
+        />
+
+
+        <input
+          className="input"
+          type="email"
+          placeholder="Email"
+          value={
+            form.email
+          }
+          onChange={
+            event =>
+              setForm({
+                ...form,
+                email:
+                  event.target.value
+              })
+          }
+        />
+
+
+        <input
+          className="input"
+          type="password"
+          placeholder="Password"
+          value={
+            form.password
+          }
+          onChange={
+            event =>
+              setForm({
+                ...form,
+                password:
+                  event.target.value
+              })
+          }
+        />
+
+
+        <button
+          className="
+          btn-primary
+          w-full
+          "
+        >
+
+          Sign In
+
+          <ArrowRight
+            size={16}
+          />
+
+        </button>
+
+      </form>
+
+
+      <p
+        className="
+        mt-6
+        text-center
+        text-xs
+        text-slate-500
+        "
+      >
+
+        Don't have an account?
+
+        {" "}
+
+        <Link
+          to="/signup"
+          className="
+          font-bold
+          text-cyan-400
+          "
+        >
+
+          Create account
+
+        </Link>
+
+      </p>
+
     </div>
 
-  );
+  </div>
+
+</div>
+
+
+);
 
 }

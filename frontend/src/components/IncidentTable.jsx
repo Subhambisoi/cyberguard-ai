@@ -20,7 +20,17 @@ export default function IncidentTable({
 
   return (
 
-    <div className="glass overflow-hidden rounded-2xl">
+    <div
+      className="
+      glass
+      overflow-hidden
+      rounded-2xl
+      border
+      border-white/10
+      "
+    >
+
+      {/* HEADER */}
 
       <div
         className="
@@ -37,6 +47,7 @@ export default function IncidentTable({
 
         </p>
 
+
         <p className="mt-1 text-xs text-slate-500">
 
           Demo records for the command center
@@ -45,6 +56,8 @@ export default function IncidentTable({
 
       </div>
 
+
+      {/* TABLE */}
 
       <div className="overflow-x-auto">
 
@@ -56,13 +69,15 @@ export default function IncidentTable({
           "
         >
 
+          {/* TABLE HEADER */}
+
           <thead
             className="
-            bg-white/[.02]
+            bg-violet-500/5
             text-[10px]
             uppercase
             tracking-wider
-            text-slate-600
+            text-slate-500
             "
           >
 
@@ -97,6 +112,8 @@ export default function IncidentTable({
           </thead>
 
 
+          {/* TABLE BODY */}
+
           <tbody
             className="
             divide-y
@@ -112,9 +129,12 @@ export default function IncidentTable({
                   className="
                   text-sm
                   transition
-                  hover:bg-white/[.025]
+                  duration-150
+                  hover:bg-violet-500/5
                   "
                 >
+
+                  {/* INCIDENT ID */}
 
                   <td
                     className="
@@ -122,12 +142,17 @@ export default function IncidentTable({
                     py-4
                     font-mono
                     text-xs
-                    text-cyan-300
+                    font-semibold
+                    text-violet-300
                     "
                   >
+
                     {item.id}
+
                   </td>
 
+
+                  {/* TYPE */}
 
                   <td
                     className="
@@ -137,9 +162,13 @@ export default function IncidentTable({
                     text-slate-200
                     "
                   >
+
                     {item.type}
+
                   </td>
 
+
+                  {/* SOURCE */}
 
                   <td
                     className="
@@ -148,9 +177,13 @@ export default function IncidentTable({
                     text-slate-500
                     "
                   >
+
                     {item.source}
+
                   </td>
 
+
+                  {/* RISK */}
 
                   <td className="px-5 py-4">
 
@@ -159,11 +192,15 @@ export default function IncidentTable({
                         item.risk
                       )}`}
                     >
+
                       {item.risk}
+
                     </span>
 
                   </td>
 
+
+                  {/* STATUS */}
 
                   <td
                     className="
@@ -172,9 +209,13 @@ export default function IncidentTable({
                     text-slate-400
                     "
                   >
+
                     {item.status}
+
                   </td>
 
+
+                  {/* TIME */}
 
                   <td
                     className="
@@ -183,7 +224,9 @@ export default function IncidentTable({
                     text-slate-500
                     "
                   >
+
                     {item.time}
+
                   </td>
 
                 </tr>
@@ -197,6 +240,8 @@ export default function IncidentTable({
 
       </div>
 
+
+      {/* VIEW ALL */}
 
       {compact && (
 
@@ -217,7 +262,8 @@ export default function IncidentTable({
             gap-1
             text-xs
             font-bold
-            text-cyan-400
+            text-violet-400
+            hover:text-violet-300
             "
           >
 
