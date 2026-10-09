@@ -8,8 +8,8 @@ import {
 
 
 const COLORS = [
-  "#22d3ee",
-  "#818cf8",
+  "#8b5cf6",
+  "#14b8a6",
   "#f59e0b"
 ];
 
@@ -19,29 +19,20 @@ export default function ThreatDistribution({
 }) {
 
   return (
-
     <div className="glass rounded-2xl p-5">
 
-      <div
-        className="
-        flex
-        items-center
-        justify-between
-        "
-      >
+      {/* HEADER */}
+
+      <div className="flex items-center justify-between">
 
         <div>
 
           <p className="font-semibold text-white">
-
             Threat Distribution
-
           </p>
 
           <p className="mt-1 text-xs text-slate-500">
-
             Current demo classification mix
-
           </p>
 
         </div>
@@ -51,25 +42,27 @@ export default function ThreatDistribution({
           className="
           rounded-lg
           border
-          border-white/10
+          border-violet-400/10
+          bg-violet-400/5
           px-2
           py-1
           font-mono
           text-[10px]
-          text-slate-500
+          font-semibold
+          text-violet-400
           "
         >
-
           MOCK
-
         </span>
 
       </div>
 
 
+      {/* CHART */}
+
       <div className="relative mt-4 h-[235px]">
 
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
 
           <PieChart>
 
@@ -80,32 +73,31 @@ export default function ThreatDistribution({
               innerRadius={65}
               outerRadius={90}
               paddingAngle={3}
+              stroke="none"
             >
 
-              {data.map(
-                (_, index) => (
+              {data.map((_, index) => (
 
-                  <Cell
-                    key={index}
-                    fill={
-                      COLORS[
-                        index %
-                        COLORS.length
-                      ]
-                    }
-                  />
+                <Cell
+                  key={index}
+                  fill={
+                    COLORS[
+                      index % COLORS.length
+                    ]
+                  }
+                />
 
-                )
-              )}
+              ))}
 
             </Pie>
 
 
             <Tooltip
               contentStyle={{
-                background: "#091525",
-                border: "1px solid #ffffff15",
-                borderRadius: 12
+                background: "#111116",
+                border: "1px solid rgba(139,92,246,0.18)",
+                borderRadius: 12,
+                color: "#e4e4e7"
               }}
             />
 
@@ -113,6 +105,8 @@ export default function ThreatDistribution({
 
         </ResponsiveContainer>
 
+
+        {/* CENTER VALUE */}
 
         <div
           className="
@@ -141,7 +135,7 @@ export default function ThreatDistribution({
               text-[10px]
               uppercase
               tracking-widest
-              text-slate-600
+              text-violet-400
               "
             >
               Threats
@@ -154,64 +148,66 @@ export default function ThreatDistribution({
       </div>
 
 
+      {/* DISTRIBUTION LIST */}
+
       <div className="space-y-3">
 
-        {data.map(
-          (item, index) => (
+        {data.map((item, index) => (
 
-            <div
-              key={item.name}
+          <div
+            key={item.name}
+            className="
+            flex
+            items-center
+            justify-between
+            text-xs
+            "
+          >
+
+            <span
               className="
               flex
               items-center
-              justify-between
-              text-xs
+              gap-2
+              text-slate-400
               "
             >
 
-              <span
+              <i
                 className="
-                flex
-                items-center
-                gap-2
-                text-slate-400
+                h-2
+                w-2
+                rounded-full
                 "
-              >
+                style={{
+                  background:
+                    COLORS[
+                      index % COLORS.length
+                    ]
+                }}
+              />
 
-                <i
-                  className="h-2 w-2 rounded-full"
-                  style={{
-                    background:
-                      COLORS[
-                        index %
-                        COLORS.length
-                      ]
-                  }}
-                />
+              {item.name}
 
-                {item.name}
-
-              </span>
+            </span>
 
 
-              <span
-                className="
-                font-mono
-                text-slate-300
-                "
-              >
-                {item.value}%
-              </span>
+            <span
+              className="
+              font-mono
+              text-slate-300
+              "
+            >
+              {item.value}%
+            </span>
 
-            </div>
+          </div>
 
-          )
-        )}
+        ))}
 
       </div>
 
     </div>
-
   );
-
 }
+

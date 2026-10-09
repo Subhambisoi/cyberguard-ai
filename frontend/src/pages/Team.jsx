@@ -10,7 +10,7 @@ import { teamMembers } from "../data/dummyData";
 export default function Team() {
 return ( <div className="mx-auto max-w-[1200px] space-y-7">
 
-```
+
   {/* PAGE HEADER */}
 
   <div className="text-center">

@@ -24,12 +24,11 @@ const cards = [
   },
 
   {
-    icon: Image,
-    title: "Image / Deepfake",
-    desc: "Visual impersonation detection will be available later.",
-    active: false
-  },
-
+  icon: Image,
+  title: "Image / Deepfake",
+  desc: "Visual impersonation detection will be available after backend integration.",
+  active: true
+},
   {
     icon: Mic,
     title: "Audio / Voice",
@@ -55,7 +54,6 @@ export default function AnalyzeCard({
   return (
 
     <button
-
       onClick={() =>
         item.active &&
         onSelect?.(item)
@@ -69,16 +67,18 @@ export default function AnalyzeCard({
         p-5
         text-left
         transition
+        duration-200
 
         ${
           item.active
 
             ? `
               border-white/10
-              bg-[#091525]/80
+              bg-[#111116]/80
               hover:-translate-y-1
-              hover:border-cyan-400/30
-              hover:bg-[#0b1a2d]
+              hover:border-violet-400/25
+              hover:bg-[#18181f]
+              hover:shadow-[0_0_25px_rgba(139,92,246,0.06)]
             `
 
             : `
@@ -100,6 +100,8 @@ export default function AnalyzeCard({
         "
       >
 
+        {/* ICON */}
+
         <div
           className={`
           grid
@@ -107,16 +109,19 @@ export default function AnalyzeCard({
           w-11
           place-items-center
           rounded-xl
+          border
 
           ${
             item.active
 
               ? `
-                bg-cyan-400/10
-                text-cyan-300
+                border-violet-400/10
+                bg-violet-400/10
+                text-violet-300
               `
 
               : `
+                border-white/5
                 bg-white/[.04]
                 text-slate-500
               `
@@ -129,6 +134,8 @@ export default function AnalyzeCard({
         </div>
 
 
+        {/* ACTION / STATUS */}
+
         {item.active ? (
 
           <ArrowRight
@@ -136,8 +143,9 @@ export default function AnalyzeCard({
             className="
             text-slate-700
             transition
+            duration-200
             group-hover:translate-x-1
-            group-hover:text-cyan-400
+            group-hover:text-teal-400
             "
           />
 
@@ -148,6 +156,7 @@ export default function AnalyzeCard({
             rounded-full
             border
             border-white/10
+            bg-white/[.02]
             px-2
             py-1
             text-[9px]
@@ -165,6 +174,8 @@ export default function AnalyzeCard({
       </div>
 
 
+      {/* TITLE */}
+
       <h3
         className="
         mt-5
@@ -172,11 +183,11 @@ export default function AnalyzeCard({
         text-white
         "
       >
-
         {item.title}
-
       </h3>
 
+
+      {/* DESCRIPTION */}
 
       <p
         className="
@@ -186,21 +197,26 @@ export default function AnalyzeCard({
         text-slate-500
         "
       >
-
         {item.desc}
-
       </p>
 
 
+      {/* AVAILABILITY */}
+
       <div
-        className="
+        className={`
         mt-5
         text-[10px]
         font-bold
         uppercase
         tracking-widest
-        text-slate-600
-        "
+
+        ${
+          item.active
+            ? "text-teal-500"
+            : "text-slate-600"
+        }
+        `}
       >
 
         {item.active
@@ -219,3 +235,4 @@ export default function AnalyzeCard({
 export {
   cards
 };
+
