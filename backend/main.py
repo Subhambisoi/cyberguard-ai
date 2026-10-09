@@ -1,10 +1,12 @@
-﻿from fastapi import FastAPI, HTTPException
+﻿import json
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from phishing.detector import detect_phishing
-
-
+from backend.phishing.detector import detect_phishing
+from backend.account_takeover.detector import detect_account_takeover
+from backend.deepfake.detector import detect_media
 # ==================================================
 # FASTAPI APPLICATION
 # ==================================================
@@ -273,38 +275,70 @@ def analyze(request: AnalysisRequest):
     # ----------------------------------------------
     # DEEPFAKE DETECTION
     # ----------------------------------------------
-
     if analysis_type == "deepfake":
-        raise HTTPException(
-            status_code=501,
-            detail={
-                "status": "not_implemented",
-                "message": (
-                    "The deepfake detector has not "
-                    "been integrated yet."
-                ),
-                "analysis_type": "deepfake",
-                "detector_integrated": False,
-            },
-        )
+        try:
+            media = json.loads(content)
 
+            if not isinstance(media, dict):
+                raise ValueError("Content must be a JSON object.")
+
+            result = detect_media(media)
+
+            return {
+                "status": "success",
+                "analysis_type": "deepfake",
+                "detector_integrated": True,
+                "notice": (
+                    "This detector evaluates supplied media metadata "
+                    "and indicators. It does not inspect actual "
+                    "image, video, or audio file contents."
+                ),
+                "result": result,
+            }
+
+        except (ValueError, TypeError) as exc:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid deepfake analysis input: {exc}",
+            ) from exc
+
+        except Exception as exc:
+            print("Deepfake detector error:", repr(exc))
+            raise HTTPException(
+                status_code=500,
+                detail="Deepfake analysis failed.",
+            ) from exc
     # ----------------------------------------------
     # ACCOUNT TAKEOVER DETECTION
     # ----------------------------------------------
 
     if analysis_type == "account_takeover":
-        raise HTTPException(
-            status_code=501,
-            detail={
-                "status": "not_implemented",
-                "message": (
-                    "The account takeover detector has "
-                    "not been integrated yet."
-                ),
+        try:
+            event = json.loads(content)
+
+            if not isinstance(event, dict):
+                raise ValueError("Content must be a JSON object.")
+
+            result = detect_account_takeover(event)
+
+            return {
+                "status": "success",
                 "analysis_type": "account_takeover",
-                "detector_integrated": False,
-            },
-        )
+                "result": result,
+            }
+
+        except (ValueError, TypeError) as exc:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid account takeover event: {exc}",
+            ) from exc
+
+        except Exception as exc:
+            print("Account takeover detector error:", repr(exc))
+            raise HTTPException(
+                status_code=500,
+                detail="Account takeover analysis failed.",
+            ) from exc
 
     # ----------------------------------------------
     # FALLBACK
